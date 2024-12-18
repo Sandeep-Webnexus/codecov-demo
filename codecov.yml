@@ -1,0 +1,21 @@
+codecov:
+  branch: main  # Specify the default branch (adjust if necessary)
+
+  notify:
+    after_n_builds: 1  # Send notifications after 1 build is finished (optional)
+
+coverage:
+  precision: 2  # The precision of the coverage report (e.g., 80.12% is rounded to 80.12)
+  round: down  # Round coverage percentage down (can be 'up', 'down', or 'nearest')
+  range: "50...100"  # Coverage range for badges (e.g., "50...100" ensures badges show 50-100%)
+
+status:
+  project:
+    default:
+      target: 80%  # Target coverage percentage for the project (adjust as needed)
+      threshold: 2%  # Allowable threshold difference for the project (2% here is the tolerance)
+
+  patch:
+    default:
+      target: 80%  # Target coverage percentage for each patch (adjust as needed)
+      threshold: 2%  # Allowable threshold difference for patches (again, 2% tolerance)

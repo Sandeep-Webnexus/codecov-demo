@@ -1,0 +1,52 @@
+image: node:18  # Node.js 18 image for the pipeline
+
+pipelines:
+  default:
+    - step:
+        name: Install & Test Backend
+        caches:
+          - node  # Cache node_modules for faster builds
+        script:
+          - cd backend  # Navigate to the backend directory
+          - npm install  # Install backend dependencies
+          - npm test -- --coverage  # Run tests with coverage for backend
+        artifacts:
+          - backend/coverage/**  # Store backend coverage reports
+
+    - step:
+        name: Install & Test Frontend
+        caches:
+          - node  # Cache node_modules for faster builds
+        script:
+          - cd frontend  # Navigate to the frontend directory
+          - rm -rf node_modules  # Clear any existing node_modules
+          - npm install  # Install frontend dependencies
+          - npx react-scripts test --coverage  # Run tests with coverage for frontend
+        artifacts:
+          - frontend/coverage/**  # Store frontend coverage reports
+
+    - step:
+        name: Debug Files Before Uploading to Codecov
+        script:
+          # Verify if the coverage files exist
+          - echo "Listing backend coverage files:"
+          - ls -al backend/coverage/
+          - echo "Listing frontend coverage files:"
+          - ls -al frontend/coverage/
+
+    - step:
+        name: Upload Coverage to Codecov
+        script:
+          # Step to download the latest Codecov uploader
+          - curl -sL https://uploader.codecov.io/latest/linux/codecov -o codecov  # Download the Codecov uploader
+          - chmod +x codecov  # Make it executable
+          
+          # Verify if the codecov uploader was downloaded and is executable
+          - ls -al codecov
+          - ./codecov --version  # Print version to verify correct installation
+
+          # Step to upload backend coverage to Codecov
+          - ./codecov -t $CODECOV_TOKEN -s ./backend/coverage  # Upload backend coverage to Codecov
+
+          # Step to upload frontend coverage to Codecov
+          - ./codecov -t $CODECOV_TOKEN -s ./frontend/coverage  # Upload frontend coverage to Codecov
